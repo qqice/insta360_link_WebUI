@@ -1,8 +1,23 @@
 from flask import Flask, request, render_template
 import paho.mqtt.client as mqtt
 
+
+def on_connect(client, userdata, flags, reason_code, properties):
+    print(f"Connected with result code {reason_code}")
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    client.subscribe("$SYS/#")
+
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    print(msg.topic + " " + str(msg.payload))
+
+
 # 创建一个MQTT客户端对象
-client = mqtt.Client()
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+client.on_connect = on_connect
+client.on_message = on_message
 
 # 连接到MQTT服务器
 client.connect("127.0.0.1", 1883, 60)
@@ -48,7 +63,7 @@ def slider():
     position = request.form.get('position')
     print("slider moved: " + position)
 
-    client.publish("camera/control", "{\"control\":3,\"zoom\":%d}" % int(100*(1+(int(position)-1)/99*3)))
+    client.publish("camera/control", "{\"control\":3,\"zoom\":%d}" % int(100 * (1 + (int(position) - 1) / 99 * 3)))
 
     return 'OK'
 
@@ -64,3 +79,4 @@ def pause():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False)
+    client.loop_forever()
