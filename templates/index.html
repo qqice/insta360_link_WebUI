@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>摄像头控制</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <!-- 在这里添加你的圆形轮盘和按钮 -->
+    <button id="up">上</button>
+    <button id="down">下</button>
+    <button id="left">左</button>
+    <button id="right">右</button>
+    <button id="center">中</button>
+
+    <!-- 在这里添加你的拖动条 -->
+    <input type="range" id="slider" min="1" max="100">
+
+    <!-- 在这里添加你的暂停按钮 -->
+    <button id="pause">暂停</button>
+
+    <script>
+    function sendControl(direction, event) {
+        $.post('/control', {direction: direction, event: event});
+    }
+
+    function sendSlider(position) {
+        $.post('/slider', {position: position});
+    }
+
+    function sendPause() {
+        $.post('/pause');
+    }
+
+    ['up', 'down', 'left', 'right', 'center'].forEach(function(id) {
+        var button = document.getElementById(id);
+        button.addEventListener('mousedown', function() {
+            sendControl(id, 'down');
+        });
+        button.addEventListener('mouseup', function() {
+            if (id !== 'center') {
+                sendControl(id, 'up');
+            }
+        });
+    });
+
+    var slider = document.getElementById('slider');
+    slider.addEventListener('change', function() {
+        sendSlider(slider.value);
+    });
+
+    var pause = document.getElementById('pause');
+    pause.addEventListener('click', sendPause);
+    </script>
+</body>
+</html>
