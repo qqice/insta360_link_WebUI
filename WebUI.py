@@ -1,4 +1,11 @@
 from flask import Flask, request, render_template
+import paho.mqtt.client as mqtt
+
+# 创建一个MQTT客户端对象
+client = mqtt.Client()
+
+# 连接到MQTT服务器
+client.connect("127.0.0.1", 1883, 60)
 
 app = Flask(__name__)
 
@@ -13,7 +20,26 @@ def control():
     direction = request.form.get('direction')
     event = request.form.get('event')
     print("button pressed: " + direction + " " + event)
-    # 在这里添加你的摄像头控制代码
+
+    if event == 'up':
+        client.publish("camera/control", "{\"control\":1}")
+    elif direction == 'center':
+        client.publish("camera/control", "{\"control\":2}")
+    elif direction == 'right':
+        client.publish("camera/control", "{\"control\":0,\"horizontal_direction\":1,\"horizontal_speed\":4,"
+                                         "\"vertical_direction\":0,\"vertical_speed\":1}")
+    elif direction == 'left':
+        client.publish("camera/control", "{\"control\":0,\"horizontal_direction\":255,\"horizontal_speed\":4,"
+                                         "\"vertical_direction\":0,\"vertical_speed\":1}")
+    elif direction == 'down':
+        client.publish("camera/control", "{\"control\":0,\"horizontal_direction\":0,\"horizontal_speed\":1,"
+                                         "\"vertical_direction\":1,\"vertical_speed\":4}")
+    elif direction == 'up':
+        client.publish("camera/control", "{\"control\":0,\"horizontal_direction\":0,\"horizontal_speed\":1,"
+                                         "\"vertical_direction\":255,\"vertical_speed\":4}")
+    else:
+        pass
+
     return 'OK'
 
 
@@ -21,16 +47,20 @@ def control():
 def slider():
     position = request.form.get('position')
     print("slider moved: " + position)
-    # 在这里添加你的摄像头控制代码
+
+    client.publish("camera/control", "{\"control\":3,\"zoom\":%d}" % int(100*(1+(int(position)-1)/99*3)))
+
     return 'OK'
 
 
 @app.route('/pause', methods=['POST'])
 def pause():
     print("pause button pressed")
-    # 在这里添加你的摄像头控制代码
+
+    client.publish("camera/control", "{\"control\":1}")
+
     return 'OK'
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=False)
