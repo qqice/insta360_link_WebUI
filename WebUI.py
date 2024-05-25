@@ -63,7 +63,7 @@ def slider():
     position = request.form.get('position')
     print("slider moved: " + position)
 
-    client.publish("camera/control", "{\"control\":3,\"zoom\":%d}" % int(100 * (1 + (int(position) - 1) / 99 * 3)))
+    client.publish("camera/control", "{\"control\":3,\"zoom\":%d}" % int(100 * (1 + int(position) / 100 * 3)))
 
     return 'OK'
 

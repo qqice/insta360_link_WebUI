@@ -3,20 +3,58 @@
 <head>
     <title>摄像头控制</title>
     <script src="/static/jquery.min.js"></script>
+    <style>
+        .wheel {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        .wheel button {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            margin: -25px 0 0 -25px;
+        }
+        .wheel #up {
+            transform: rotate(0deg) translate(0, -75px) rotate(0deg);
+        }
+        .wheel #right {
+            transform: rotate(90deg) translate(0, -75px) rotate(-90deg);
+        }
+        .wheel #down {
+            transform: rotate(180deg) translate(0, -75px) rotate(-180deg);
+        }
+        .wheel #left {
+            transform: rotate(270deg) translate(0, -75px) rotate(-270deg);
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <!-- 在这里添加你的圆形轮盘和按钮 -->
-    <button id="up">上</button>
-    <button id="down">下</button>
-    <button id="left">左</button>
-    <button id="right">右</button>
-    <button id="center">中</button>
+    <div class="wheel">
+        <button id="up">上</button>
+        <button id="right">右</button>
+        <button id="down">下</button>
+        <button id="left">左</button>
+        <button id="center">中</button>
+    </div>
 
-    <!-- 在这里添加你的拖动条 -->
-    <label for="slider"></label><input type="range" id="slider" min="1" max="100">
+    <div class="controls">
+        <!-- 在这里添加你的拖动条 -->
+        <label for="slider"></label><input type="range" id="slider" min="0" max="100">
 
-    <!-- 在这里添加你的暂停按钮 -->
-    <button id="pause">暂停</button>
+        <!-- 在这里添加你的暂停按钮 -->
+        <button id="pause">暂停</button>
+    </div>
 
     <script>
     function sendControl(direction, event) {
@@ -37,6 +75,14 @@
             sendControl(id, 'down');
         });
         button.addEventListener('mouseup', function() {
+            if (id !== 'center') {
+                sendControl(id, 'up');
+            }
+        });
+        button.addEventListener('touchstart', function() {
+            sendControl(id, 'down');
+        });
+        button.addEventListener('touchend', function() {
             if (id !== 'center') {
                 sendControl(id, 'up');
             }
