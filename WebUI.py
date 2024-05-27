@@ -78,5 +78,6 @@ def pause():
 
 
 if __name__ == '__main__':
+    client.loop_start()
     app.run(host="0.0.0.0", debug=False)
-    client.loop_forever()
+    client.loop_stop()
