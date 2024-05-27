@@ -9,6 +9,10 @@ def on_connect(client, userdata, flags, reason_code, properties):
     client.subscribe("$SYS/#")
 
 
+def on_disconnect(client, userdata, flags, reason_code, properties):
+    print(f"Disconnected with result code {reason_code}")
+
+
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
@@ -18,6 +22,7 @@ def on_message(client, userdata, msg):
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
+client.on_disconnect = on_disconnect
 
 # 连接到MQTT服务器
 client.connect("127.0.0.1", 1883, 60)
