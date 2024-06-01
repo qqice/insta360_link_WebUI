@@ -57,6 +57,21 @@
             width: 100%;
             height: 100%;
         }
+
+        .responsive-iframe-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .responsive-iframe-row iframe {
+            flex: 1;
+            max-width: 640px;
+            max-height: 480px;
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +94,12 @@
 
 <div class="responsive-iframe">
     <iframe src="http://100.65.194.88:8889/mystream"></iframe>
+</div>
+
+<div class="responsive-iframe-row">
+    <iframe src="http://100.65.194.88:8889/depth"></iframe>
+    <iframe src="http://100.65.194.88:8889/ir_left"></iframe>
+    <iframe src="http://100.65.194.88:8889/ir_right"></iframe>
 </div>
 
 <script>
