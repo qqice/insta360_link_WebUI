@@ -82,6 +82,16 @@ def pause():
     return 'OK'
 
 
+@app.route('/infer', methods=['POST'])
+def infer():
+    filename = request.form.get('filename')
+    print("infer button pressed")
+
+    client.publish("camera/control", "{\"control\":5,\"name\":\"" + filename + "\"}")
+
+    return 'OK'
+
+
 if __name__ == '__main__':
     client.loop_start()
     app.run(host="0.0.0.0", debug=False)

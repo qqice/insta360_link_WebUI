@@ -67,8 +67,8 @@
 
         .responsive-iframe-row iframe {
             flex: 1;
-            max-width: 640px;
-            max-height: 480px;
+            max-width: 1280px;
+            max-height: 720px;
             width: 100%;
             height: auto;
         }
@@ -90,6 +90,10 @@
 
     <!-- 在这里添加你的暂停按钮 -->
     <button id="pause">暂停</button>
+
+    <!-- 在这里添加你的输入框和按钮 -->
+    <input type="text" id="inputBox" value="inference.jpg">
+    <button id="infer">推理</button>
 </div>
 
 <div class="responsive-iframe">
@@ -142,6 +146,14 @@
 
     const pause = document.getElementById('pause');
     pause.addEventListener('click', sendPause);
+
+    function sendInference() {
+        const inputBox = document.getElementById('inputBox');
+        $.post('/infer', {filename: inputBox.value});
+    }
+
+    const inferButton = document.getElementById('infer');
+    inferButton.addEventListener('click', sendInference);
 </script>
 </body>
 </html>
