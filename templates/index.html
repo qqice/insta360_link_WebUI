@@ -96,14 +96,23 @@
     <button id="infer">推理</button>
 </div>
 
+<!-- 添加显示推理结果的图片 -->
+<div>
+    <img id="inferenceImage" src="" alt="Inference Result" style="display:none; max-width: 100%;">
+</div>
+
 <div class="responsive-iframe">
-    <iframe src="http://100.65.194.88:8889/mystream"></iframe>
+    <label><input type="checkbox" id="streamToggle1"> Main Stream</label>
+    <iframe id="stream1" src="" data-src="http://100.65.194.88:8888/mainstream" style="display:none;"></iframe>
 </div>
 
 <div class="responsive-iframe-row">
-    <iframe src="http://100.65.194.88:8889/depth"></iframe>
-    <iframe src="http://100.65.194.88:8889/ir_left"></iframe>
-    <iframe src="http://100.65.194.88:8889/ir_right"></iframe>
+    <label><input type="checkbox" id="streamToggle2"> Depth Stream</label>
+    <iframe id="stream2" src="" data-src="http://100.65.194.88:8888/depth" style="display:none;"></iframe>
+    <label><input type="checkbox" id="streamToggle3"> IR_left Stream</label>
+    <iframe id="stream3" src="" data-src="http://100.65.194.88:8888/ir_left" style="display:none;"></iframe>
+    <label><input type="checkbox" id="streamToggle4"> IR_right Stream</label>
+    <iframe id="stream4" src="" data-src="http://100.65.194.88:8888/ir_right" style="display:none;"></iframe>
 </div>
 
 <script>
@@ -149,11 +158,51 @@
 
     function sendInference() {
         const inputBox = document.getElementById('inputBox');
+        const imageUrl = "https://example.com/" + inputBox.value;
+        const inferenceImage = document.getElementById('inferenceImage');
+
+        function loadImage(url) {
+            $.ajax({
+                url: url,
+                type: 'HEAD',
+                success: function() {
+                    inferenceImage.src = url;
+                    inferenceImage.style.display = 'block';
+                },
+                error: function() {
+                    setTimeout(function() {
+                        loadImage(url);
+                    }, 5000);
+                }
+            });
+        }
+
+        loadImage(imageUrl);
         $.post('/infer', {filename: inputBox.value});
     }
 
     const inferButton = document.getElementById('infer');
     inferButton.addEventListener('click', sendInference);
+
+    function toggleStream(streamId, toggleId) {
+        const stream = document.getElementById(streamId);
+        const toggle = document.getElementById(toggleId);
+
+        toggle.addEventListener('change', function() {
+            if (toggle.checked) {
+                stream.src = stream.getAttribute('data-src');
+                stream.style.display = 'block';
+            } else {
+                stream.src = '';
+                stream.style.display = 'none';
+            }
+        });
+    }
+
+    toggleStream('stream1', 'streamToggle1');
+    toggleStream('stream2', 'streamToggle2');
+    toggleStream('stream3', 'streamToggle3');
+    toggleStream('stream4', 'streamToggle4');
 </script>
 </body>
 </html>
