@@ -164,7 +164,7 @@
         function loadImage(url) {
             $.ajax({
                 url: url,
-                type: 'HEAD',
+                type: 'GET',
                 success: function() {
                     inferenceImage.src = url;
                     inferenceImage.style.display = 'block';
@@ -172,7 +172,7 @@
                 error: function() {
                     setTimeout(function() {
                         loadImage(url);
-                    }, 5000);
+                    }, 500);
                 }
             });
         }
